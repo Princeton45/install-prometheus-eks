@@ -1,4 +1,4 @@
-# Monitoring Kubernetes with Prometheus Stack
+# Installing Prometheus Stack in Kubernetes
 
 ## Project Overview
 This project demonstrates my implementation of a comprehensive monitoring solution for Kubernetes using the Prometheus stack. I deployed Prometheus, Alert Manager, and Grafana on an AWS EKS cluster to enable robust monitoring capabilities.
