@@ -11,6 +11,7 @@ I deployed the initial setup of Prometheus for the EKS Cluster with Helm, while 
 - Kubernetes
 - Helm
 - Prometheus
+- Terraform
 - Grafana
 - Alert Manager
 - Linux
@@ -18,9 +19,17 @@ I deployed the initial setup of Prometheus for the EKS Cluster with Helm, while 
 ## Implementation
 
 ### EKS Cluster Deployment
-I used eksctl to provision and configure an EKS cluster on AWS. This provided a fully managed Kubernetes environment for my monitoring stack.
 
-*[Suggested image: Terminal screenshot showing eksctl command completion or AWS console showing running EKS cluster]*
+I used Terraform to provision and configure an EKS cluster on AWS. This provided a fully managed Kubernetes environment for my monitoring stack.
+
+![eks-cluster](https://github.com/Princeton45/install-prometheus-eks/blob/main/images/ekscluster.png)
+
+### Microservices App Deployment
+
+I then deployed a Microservices application in the EKS Cluster from [Google](https://github.com/GoogleCloudPlatform/microservices-demo) by executing the `config-microservices.yaml` file. This is the application that Prometheus will be monitoring.
+
+![microservices](https://github.com/Princeton45/install-prometheus-eks/blob/main/images/microservices.png)
+
 
 ### Prometheus Stack Installation
 I deployed the complete Prometheus monitoring stack using Helm charts. The installation included:
@@ -28,33 +37,19 @@ I deployed the complete Prometheus monitoring stack using Helm charts. The insta
 - Grafana for visualization and dashboards
 - Alert Manager for handling alerts and notifications
 
-*[Suggested image: kubectl output showing all pods running in the monitoring namespace]*
+I ran the following commands to install the Prometheus Helm chart in the cluster
 
-### Configuration and Customization
-I configured the Prometheus Operator to scrape metrics from the Kubernetes API server and all workloads running in the cluster.
+`helm repo add prometheus-community https://prometheus-community.github.io/helm-charts`
+`helm repo update`
 
-*[Suggested image: Prometheus targets page showing successful scraping]*
+I then created a namespace called `monitoring` just for the Prometheus app.
 
-### Dashboard Setup
-I set up multiple Grafana dashboards to visualize:
-- Cluster-level metrics
-- Node performance statistics
-- Pod resource utilization
-- Application-specific metrics
+`kubectl create namespace monitoring`
 
-*[Suggested image: Screenshot of Grafana dashboard showing key metrics]*
+Next I installed the Prometheus helm chart in the `monitoring` namespace
 
-### Alert Configuration
-I configured alerting rules for critical conditions and integrated Alert Manager with notification channels.
+`helm install monitoring prometheus-community/kube-prometheus-stack -n monitoring`
 
-*[Suggested image: Alert Manager UI showing configured alerts]*
+![helm-install](https://github.com/Princeton45/install-prometheus-eks/blob/main/images/helm-install.png)
 
-## Results
-This implementation provides comprehensive visibility into the health and performance of the Kubernetes cluster. The monitoring stack helps with:
-- Proactive issue detection
-- Performance optimization
-- Capacity planning
-- Troubleshooting
-
-## Conclusion
-The Prometheus stack deployment provides a robust foundation for monitoring containerized applications in Kubernetes. The solution is scalable and can be extended to monitor additional services as needed.
+![get-all](https://github.com/Princeton45/install-prometheus-eks/blob/main/images/get-all.png)
